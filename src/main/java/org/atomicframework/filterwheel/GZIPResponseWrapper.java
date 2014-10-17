@@ -39,4 +39,3 @@ public class GZIPResponseWrapper extends HttpServletResponseWrapper {
         return writer;}
 
     public void setContentLength(int length) {}}
-
