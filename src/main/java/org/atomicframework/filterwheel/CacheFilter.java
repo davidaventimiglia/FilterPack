@@ -5,21 +5,16 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-public class CacheFilter implements Filter {
+public class CacheFilter extends AbstractHttpFilter {
     private ServletContext sc;
-    private FilterConfig fc;
     private long cacheTimeout = Long.MAX_VALUE;
 
-    public void doFilter (ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest)req;
-        HttpServletResponse response = (HttpServletResponse)res;
-
+    protected void doFilter (HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // check if was a resource that shouldn't be cached.
         String r = sc.getRealPath("");
         String path = fc.getInitParameter(request.getRequestURI());
-        if (path!=null && path.equals("nocache")) {
-            chain.doFilter(request, response);
-            return;}
+        if (path!=null && path.equals("nocache")) {chain.doFilter(request, response); return;}
+
         path = r+path;
 
         // customize to match parameters
@@ -52,7 +47,7 @@ public class CacheFilter implements Filter {
                 new File(name).mkdirs();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 CacheResponseWrapper wrappedResponse = new CacheResponseWrapper(response, baos);
-                chain.doFilter(req, wrappedResponse);
+                chain.doFilter(request, wrappedResponse);
                 FileOutputStream fos = new FileOutputStream(file);
                 fos.write(baos.toByteArray());
                 fos.flush();
@@ -63,15 +58,27 @@ public class CacheFilter implements Filter {
         FileInputStream fis = new FileInputStream(file);
         String mt = sc.getMimeType(request.getRequestURI());
         response.setContentType(mt);
-        ServletOutputStream sos = res.getOutputStream();
+        ServletOutputStream sos = response.getOutputStream();
         for (int i = fis.read(); i!= -1; i = fis.read()) sos.write((byte)i);}
 
     public void init (FilterConfig filterConfig) {
-        this.fc = filterConfig;
+        super.init(filterConfig);
         String ct = fc.getInitParameter("cacheTimeout");
         if (ct!=null) cacheTimeout = 60*1000*Long.parseLong(ct);
         this.sc = filterConfig.getServletContext();}
 
     public void destroy () {
-        this.sc = null;
-        this.fc = null;}}
+        super.destroy();
+        this.sc = null;}
+
+    public static class CacheResponseStream extends AbstractFilterStream {
+        protected ServletOutputStream output = null;
+        protected OutputStream cache = null;
+
+        public CacheResponseStream (HttpServletResponse response, OutputStream cache) throws IOException {
+            super(response, cache);
+            closed = false;
+            this.cache = cache;}
+
+        protected OutputStream getBaseStream () {
+            return cache;}}}
