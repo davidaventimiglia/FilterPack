@@ -1,9 +1,10 @@
-package org.atomicframework.filterwheel;
+package org.atomicframework.filterwheel.filters;
 
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import org.atomicframework.filterwheel.api.*;
 
 public class ResponseHeaderFilter extends AbstractHttpFilter {
     protected void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {

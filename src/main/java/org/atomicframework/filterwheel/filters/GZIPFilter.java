@@ -1,9 +1,10 @@
-package org.atomicframework.filterwheel;
+package org.atomicframework.filterwheel.filters;
 
 import java.io.*;
 import java.util.zip.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import org.atomicframework.filterwheel.api.*;
 
 public class GZIPFilter extends AbstractHttpFilter {
     protected void doFilter (HttpServletRequest req, final HttpServletResponse res, FilterChain chain) throws IOException, ServletException {

@@ -1,4 +1,4 @@
-package org.atomicframework.filterwheel;
+package org.atomicframework.filterwheel.api;
 
 import java.io.*;
 import javax.servlet.*;
