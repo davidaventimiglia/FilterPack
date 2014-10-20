@@ -7,13 +7,14 @@ import javax.servlet.http.*;
 public abstract class AbstractFilterStream extends ServletOutputStream {
     protected boolean closed = false;
     protected HttpServletResponse response = null;
-    protected OutputStream baseStream = null;
 
-    public AbstractFilterStream (HttpServletResponse response, OutputStream base) {
+    public AbstractFilterStream () {
+        super();}
+
+    public AbstractFilterStream (HttpServletResponse response) {
         super();
         closed = false;
-        this.response = response;
-        this.baseStream = base;}
+        this.response = response;}
 
     protected abstract OutputStream getBaseStream ();
 
@@ -42,10 +43,4 @@ public abstract class AbstractFilterStream extends ServletOutputStream {
     @Override
     public void write (byte b[], int off, int len) throws IOException {
         if (closed) throw new IOException("Cannot write to a closed output stream");
-        getBaseStream().write(b, off, len);}
-
-    @Override
-    public boolean isReady () {return true;}
-
-    @Override
-    public void setWriteListener (WriteListener listener) {}}
+        getBaseStream().write(b, off, len);}}
