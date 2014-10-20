@@ -76,7 +76,7 @@ public class CacheFilter extends AbstractHttpFilter {
         protected OutputStream cache = null;
 
         public CacheResponseStream (HttpServletResponse response, OutputStream cache) throws IOException {
-            super(response, cache);
+            super(response);
             closed = false;
             this.cache = cache;}
 
