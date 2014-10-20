@@ -10,8 +10,8 @@ public class CompressionFilter extends AbstractHttpFilter {
     @Override protected void doFilter (HttpServletRequest req, final HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         if (req.getHeader("accept-encoding")==null || req.getHeader("accept-encoding").indexOf("gzip")==-1) {chain.doFilter(req, res); return;}
         ByteArrayOutputStream byteBucket = new ByteArrayOutputStream();
-        GZIPOutputStream deflator = new GZIPOutputStream(byteBucket);
-        final ComposableServletOutputStream bucketStream = new ComposableServletOutputStream(deflator);
+        GZIPOutputStream compressor = new GZIPOutputStream(byteBucket);
+        final ComposableServletOutputStream bucketStream = new ComposableServletOutputStream(compressor);
         HttpServletResponseWrapper response = new HttpServletResponseWrapper(res) {
                 private PrintWriter myWriter = null;
                 private ServletOutputStream myOutputStream = null;
@@ -32,7 +32,7 @@ public class CompressionFilter extends AbstractHttpFilter {
         chain.doFilter(req, response);
         response.flushBuffer();
         bucketStream.flush();
-        deflator.finish();
+        compressor.finish();
         byte[] contents = byteBucket.toByteArray();
         res.addHeader("Content-Encoding", "gzip");
         res.setContentLength(contents.length);
