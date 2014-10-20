@@ -1,71 +1,38 @@
 package org.atomicframework.filterwheel;
 
 import java.io.*;
-import java.util.*;
 import java.util.zip.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
 public class GZIPFilter extends AbstractHttpFilter {
-    protected void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+    protected void doFilter (HttpServletRequest req, final HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         if (req.getHeader("accept-encoding")==null || req.getHeader("accept-encoding").indexOf("gzip")==-1) {chain.doFilter(req, res); return;}
-        GZIPResponseWrapper wrappedResponse = new GZIPResponseWrapper(res);
-        chain.doFilter(req, wrappedResponse);
-        wrappedResponse.finishResponse();}
-
-    public static class GZIPResponseStream extends AbstractFilterStream {
-        protected ByteArrayOutputStream baos = null;
-        protected GZIPOutputStream gzipstream = null;
-
-        protected OutputStream getBaseStream () {
-            return gzipstream;}
-
-        public GZIPResponseStream (HttpServletResponse response) throws IOException {
-            super(response, response.getOutputStream());
-            baos = new ByteArrayOutputStream();
-            gzipstream = new GZIPOutputStream(baos);}
-
-        public void close () throws IOException {
-            if (isClosed()) throw new IOException("This output stream has already been closed");
-            gzipstream.finish();
-            byte[] bytes = baos.toByteArray();
-            getResponse().addHeader("Content-Length", Integer.toString(bytes.length)); 
-            getResponse().addHeader("Content-Encoding", "gzip");
-            getBaseStream().write(bytes);
-            getBaseStream().flush();
-            super.close();}}
-
-    public static class GZIPResponseWrapper extends HttpServletResponseWrapper {
-        protected HttpServletResponse origResponse = null;
-        protected ServletOutputStream stream = null;
-        protected PrintWriter writer = null;
-
-        public GZIPResponseWrapper (HttpServletResponse response) {
-            super(response);
-            origResponse = response;}
-
-        public ServletOutputStream createOutputStream () throws IOException {
-            return (new GZIPResponseStream(origResponse));}
-
-        public void finishResponse () {
-            try {
-                if (writer!=null) {writer.close(); return;}
-                if (stream!=null) {stream.close(); return;}}
-            catch (IOException e) {}}
-
-        public void flushBuffer () throws IOException {
-            stream.flush();}
-
-        public ServletOutputStream getOutputStream () throws IOException {
-            if (writer!=null) throw new IllegalStateException("getWriter() has already been called!");
-            if (stream==null) stream = createOutputStream();
-            return stream;}
-
-        public PrintWriter getWriter () throws IOException {
-            if (writer!=null) return writer;
-            if (stream!=null) throw new IllegalStateException("getOutputStream() has already been called!");
-            stream = createOutputStream();
-            writer = new PrintWriter(new OutputStreamWriter(stream, "UTF-8"));
-            return writer;}
-
-        public void setContentLength(int length) {}}}
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        GZIPOutputStream deflator = new GZIPOutputStream(bytes);
+        final ComposableServletOutputStream stream = new ComposableServletOutputStream(deflator);
+        HttpServletResponseWrapper response = new HttpServletResponseWrapper(res) {
+                private PrintWriter writer = null;
+                boolean isOutputStreamReady = false;
+                boolean isWriterReady = false;
+                @Override public void flushBuffer () throws IOException {
+                    if (writer!=null) writer.flush(); else stream.flush();}
+                @Override public ServletOutputStream getOutputStream () throws IOException {
+                    if (isOutputStreamReady) throw new IllegalStateException("getOutputStream has already been called.");
+                    if (isWriterReady) throw new IllegalStateException("getWriter has already been called.");
+                    isOutputStreamReady = true;
+                    return stream;}
+                @Override public PrintWriter getWriter () throws IOException {
+                    if (isOutputStreamReady) throw new IllegalStateException("getOutputStream has already been called.");
+                    if (isWriterReady) throw new IllegalStateException("getWriter has already been called.");
+                    writer = new PrintWriter(new OutputStreamWriter(stream));
+                    isWriterReady = true;
+                    return writer;}};
+        chain.doFilter(req, response);
+        response.flushBuffer();
+        stream.flush();
+        deflator.finish();
+        byte[] contents = bytes.toByteArray();
+        res.addHeader("Content-Encoding", "gzip");
+        res.setContentLength(contents.length);
+        res.getOutputStream().write(contents);}}
