@@ -8,11 +8,11 @@ import org.atomicframework.filterwheel.api.*;
 
 public class CompressionFilter extends AbstractHttpFilter {
     @Override protected void doFilter (HttpServletRequest origReq, final HttpServletResponse origRes, FilterChain chain) throws IOException, ServletException {
-        if (req.getHeader("accept-encoding")==null || req.getHeader("accept-encoding").indexOf("gzip")==-1) {chain.doFilter(req, res); return;}
+        if (origReq.getHeader("accept-encoding")==null || origReq.getHeader("accept-encoding").indexOf("gzip")==-1) {chain.doFilter(origReq, origRes); return;}
         ByteArrayOutputStream byteBucket = new ByteArrayOutputStream();
         GZIPOutputStream compressor = new GZIPOutputStream(byteBucket);
         final ComposableServletOutputStream bucketStream = new ComposableServletOutputStream(compressor);
-        HttpServletResponseWrapper newResponse = new HttpServletResponseWrapper(res) {
+        HttpServletResponseWrapper newResponse = new HttpServletResponseWrapper(origRes) {
                 private PrintWriter myWriter = null;
                 private ServletOutputStream myOutputStream = null;
                 @Override public void flushBuffer () throws IOException {
