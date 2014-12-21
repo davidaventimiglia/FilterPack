@@ -1,10 +1,10 @@
-package org.atomicframework.filterwheel.filters;
+package org.neptunestation.filterpack.filters;
 
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import org.atomicframework.filterwheel.api.*;
+import org.neptunestation.filterpack.api.*;
 
 public class ServerSideCacheFilter extends AbstractHttpFilter {
     private ServletContext sc;

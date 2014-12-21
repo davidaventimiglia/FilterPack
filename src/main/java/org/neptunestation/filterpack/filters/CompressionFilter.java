@@ -1,10 +1,10 @@
-package org.atomicframework.filterwheel.filters;
+package org.neptunestation.filterpack.filters;
 
 import java.io.*;
 import java.util.zip.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import org.atomicframework.filterwheel.api.*;
+import org.neptunestation.filterpack.api.*;
 
 public class CompressionFilter extends AbstractHttpFilter {
     @Override protected void doFilter (HttpServletRequest origReq, final HttpServletResponse origRes, FilterChain chain) throws IOException, ServletException {
