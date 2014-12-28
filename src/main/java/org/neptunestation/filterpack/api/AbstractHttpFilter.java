@@ -8,6 +8,9 @@ public abstract class AbstractHttpFilter implements Filter {
     protected FilterConfig fc;
     protected abstract void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException;
 
+    protected FilterConfig getFilterConfig () {
+        return fc;}
+
     @Override public void doFilter (ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         if (req==null) throw new IllegalArgumentException("HttpServletRequest is required.");
         if (res==null) throw new IllegalArgumentException("HttpServletResponse is required.");
