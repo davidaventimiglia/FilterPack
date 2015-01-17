@@ -8,7 +8,7 @@ public abstract class ByteBucketHttpServletResponse extends HttpServletResponseW
     protected PrintWriter myWriter = null;
     protected ServletOutputStream myOutputStream = null;
     protected ByteArrayOutputStream bucket = new ByteArrayOutputStream();
-    protected ComposableServletOutputStream servletStream = new ComposableServletOutputStream(bucket);
+    protected ComposableServletOutputStream servletStream = new ComposableServletOutputStream(bucket) {};
 
     public ByteBucketHttpServletResponse (HttpServletResponse origRes) {
         super(origRes);}

@@ -3,7 +3,7 @@ package org.neptunestation.filterpack.api;
 import java.io.*;
 import javax.servlet.*;
 
-public class ComposableServletOutputStream extends ServletOutputStream {
+public abstract class ComposableServletOutputStream extends ServletOutputStream {
     protected OutputStream nestedStream = null;
 
     public ComposableServletOutputStream (OutputStream stream) {
