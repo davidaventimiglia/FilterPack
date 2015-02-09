@@ -11,6 +11,9 @@ public abstract class ComposableServletOutputStream extends ServletOutputStream 
         if (stream==null) throw new IllegalArgumentException("OutputStream is required.");
         this.nestedStream = stream;}
 
+    protected OutputStream getNestedStream () {
+        return nestedStream;}
+
     @Override public void close () throws IOException {
         nestedStream.close();
         super.close();}

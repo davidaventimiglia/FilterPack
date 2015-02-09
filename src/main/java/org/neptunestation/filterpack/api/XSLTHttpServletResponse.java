@@ -24,19 +24,16 @@ public abstract class XSLTHttpServletResponse extends ByteBucketHttpServletRespo
         this(origRes, new StringReader(xslt));}
 
     @Override public ServletOutputStream getOutputStream () throws IOException {
-        if (myOutputStream!=null) throw new IllegalStateException("getOutputStream has already been called.");
-        if (myWriter!=null) throw new IllegalStateException("getWriter has already been called.");
-        return new ComposableServletOutputStream(bucket) {
+        if (!(getContentType()+"").matches(".*/.*\\+?xml.*")) return super.getOutputStream();
+        myOutputStream = new ComposableServletOutputStream(getBucket()) {
             @Override public void flush () throws IOException {
-                if ((getContentType()+"").matches(".*/.*\\+?xml.*")) commit(toTransformedByteArray()); else commit(toByteArray());
-                nestedStream.flush();}};}
+                nestedStream.flush();
+                super.flush();
+                commit(toTransformedByteArray());}};
+        return myOutputStream;}
 
     protected byte[] toTransformedByteArray () throws IOException {
         ByteArrayOutputStream target = new ByteArrayOutputStream();
         try {transformer.transform(new StreamSource(getInputStream()), new StreamResult(target));}
         catch (Throwable t) {throw new IOException(t);}
-        return target.toByteArray();}
-
-    protected void commit (byte[] contents) throws IOException {
-        getResponse().setContentLength(contents.length);
-        getResponse().getOutputStream().write(contents);}}
+        return target.toByteArray();}}
