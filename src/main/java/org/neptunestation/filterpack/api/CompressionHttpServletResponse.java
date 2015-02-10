@@ -11,11 +11,12 @@ public abstract class CompressionHttpServletResponse extends BufferedHttpServlet
         super(origRes);}
 
     @Override public ServletOutputStream getOutputStream () throws IOException {
-        if (myOutputStream!=null) throw new IllegalStateException("getOutputStream has already been called.");
-        if (myWriter!=null) throw new IllegalStateException("getWriter has already been called.");
         final GZIPOutputStream compressor = new GZIPOutputStream(getBuffer());
-        return new ComposableServletOutputStream(getBuffer()) {
+        myOutputStream = new ComposableServletOutputStream(compressor) {
             @Override public void flush () throws IOException {
-                getNestedStream().flush();
-                compressor.finish();}};}}
+                nestedStream.flush();
+                super.flush();
+                compressor.finish();
+                commit(toByteArray());}};
+        return myOutputStream;}}
 
