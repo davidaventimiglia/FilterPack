@@ -13,7 +13,7 @@ public class XMLTransformFilter extends AbstractHttpFilter {
 
     @Override protected void doFilter (HttpServletRequest origReq, HttpServletResponse origRes, FilterChain chain) throws IOException, ServletException {
         ByteArrayOutputStream target = new ByteArrayOutputStream();
-        ByteBucketHttpServletResponse newResponse = new ByteBucketHttpServletResponse(origRes){};
+        BufferedHttpServletResponse newResponse = new BufferedHttpServletResponse(origRes){};
         chain.doFilter(origReq, newResponse);
         try {
             if ((origRes.getContentType()+"").matches(".*/.*\\+?xml.*")) {

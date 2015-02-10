@@ -8,7 +8,7 @@ import org.neptunestation.filterpack.api.*;
 
 public class BufferedFilter extends AbstractHttpFilter {
     protected HttpServletResponse wrapResponse (HttpServletResponse origRes) throws ServletException {
-        return new ByteBucketHttpServletResponse(origRes){};}
+        return new BufferedHttpServletResponse(origRes){};}
 
     @Override protected void doFilter (HttpServletRequest origReq, HttpServletResponse origRes, FilterChain chain) throws IOException, ServletException {
         chain.doFilter(origReq, wrapResponse(origRes));}}

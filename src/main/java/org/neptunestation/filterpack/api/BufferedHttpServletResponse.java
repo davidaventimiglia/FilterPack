@@ -4,22 +4,22 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-public abstract class ByteBucketHttpServletResponse extends HttpServletResponseWrapper {
-    protected ByteArrayOutputStream bucket = new ByteArrayOutputStream();
+public abstract class BufferedHttpServletResponse extends HttpServletResponseWrapper {
+    protected ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     protected PrintWriter myWriter = null;
     protected ServletOutputStream myOutputStream = null;
 
-    public ByteBucketHttpServletResponse (HttpServletResponse origRes) {
+    public BufferedHttpServletResponse (HttpServletResponse origRes) {
         super(origRes);}
 
     public InputStream getInputStream () {
-        return new ByteArrayInputStream(bucket.toByteArray());}
+        return new ByteArrayInputStream(buffer.toByteArray());}
 
     public byte[] toByteArray () {
-        return bucket.toByteArray();}
+        return buffer.toByteArray();}
 
-    protected ByteArrayOutputStream getBucket () {
-        return bucket;}
+    protected ByteArrayOutputStream getBuffer () {
+        return buffer;}
 
     @Override public void flushBuffer () throws IOException {
         if (myWriter==null && myOutputStream==null) throw new IllegalStateException("HttpServletResponse is not properly initialized.");
@@ -30,7 +30,7 @@ public abstract class ByteBucketHttpServletResponse extends HttpServletResponseW
     @Override public ServletOutputStream getOutputStream () throws IOException {
         if (myWriter!=null) throw new IllegalStateException("getWriter has already been called.");
         if (myOutputStream!=null) return myOutputStream;
-        myOutputStream = new ComposableServletOutputStream(getBucket()) {
+        myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
                 super.flush();
                 commit(toByteArray());}};

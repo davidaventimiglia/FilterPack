@@ -7,7 +7,7 @@ import javax.servlet.http.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
-public abstract class XSLTHttpServletResponse extends ByteBucketHttpServletResponse {
+public abstract class XSLTHttpServletResponse extends BufferedHttpServletResponse {
     protected Source xslt = null;
     protected Transformer transformer = null;
 
@@ -25,7 +25,7 @@ public abstract class XSLTHttpServletResponse extends ByteBucketHttpServletRespo
 
     @Override public ServletOutputStream getOutputStream () throws IOException {
         if (!(getContentType()+"").matches(".*/.*\\+?xml.*")) return super.getOutputStream();
-        myOutputStream = new ComposableServletOutputStream(getBucket()) {
+        myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
                 nestedStream.flush();
                 super.flush();
