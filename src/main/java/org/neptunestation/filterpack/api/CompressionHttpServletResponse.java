@@ -11,12 +11,17 @@ public abstract class CompressionHttpServletResponse extends BufferedHttpServlet
         super(origRes);}
 
     @Override public ServletOutputStream getOutputStream () throws IOException {
-        final GZIPOutputStream compressor = new GZIPOutputStream(getBuffer());
-        myOutputStream = new ComposableServletOutputStream(compressor) {
+        myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
+                System.out.println(String.format("Location:  %s", new Exception().getStackTrace()[0]));
                 nestedStream.flush();
                 super.flush();
-                compressor.finish();
-                commit(toByteArray());}};
-        return myOutputStream;}}
+                commit(toTransformedByteArray());}};
+        return myOutputStream;}
 
+    protected byte[] toTransformedByteArray () throws IOException {
+        ByteArrayOutputStream target = new ByteArrayOutputStream();
+        GZIPOutputStream compressor = new GZIPOutputStream(target);
+        compressor.write(getBuffer().toByteArray());
+        compressor.finish();
+        return target.toByteArray();}}

@@ -11,4 +11,4 @@ public class CompressionFilterExt extends BufferedFilter {
         return new CompressionHttpServletResponse(origRes){};}
 
     @Override protected void doFilter (HttpServletRequest origReq, HttpServletResponse origRes, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(origReq, new CompressionHttpServletResponse(origRes){});}}
+        chain.doFilter(origReq, wrapResponse(origRes));}}

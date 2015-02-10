@@ -27,6 +27,7 @@ public abstract class XSLTHttpServletResponse extends BufferedHttpServletRespons
         if (!(getContentType()+"").matches(".*/.*\\+?xml.*")) return super.getOutputStream();
         myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
+                System.out.println(String.format("Location:  %s", new Exception().getStackTrace()[0]));
                 nestedStream.flush();
                 super.flush();
                 commit(toTransformedByteArray());}};
