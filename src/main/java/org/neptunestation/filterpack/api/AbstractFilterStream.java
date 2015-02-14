@@ -18,9 +18,6 @@ public abstract class AbstractFilterStream extends ServletOutputStream {
 
     protected abstract OutputStream getBaseStream ();
 
-    protected HttpServletResponse getResponse () {
-        return response;}
-
     public boolean isClosed () {
         return closed;}
   

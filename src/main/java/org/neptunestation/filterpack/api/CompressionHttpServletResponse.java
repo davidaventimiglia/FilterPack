@@ -14,10 +14,16 @@ public abstract class CompressionHttpServletResponse extends BufferedHttpServlet
         myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
                 System.out.println(String.format("Location:  %s", new Exception().getStackTrace()[0]));
-                nestedStream.flush();
+                // nestedStream.flush();
                 super.flush();
                 commit(toTransformedByteArray());}};
         return myOutputStream;}
+
+    @Override protected void commit (byte[] contents) throws IOException {
+        addHeader("Content-Encoding", "gzip");
+        setContentLength(contents.length);
+        getOutputStream().write(contents);
+        getOutputStream().flush();}
 
     protected byte[] toTransformedByteArray () throws IOException {
         ByteArrayOutputStream target = new ByteArrayOutputStream();
