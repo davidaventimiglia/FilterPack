@@ -6,10 +6,11 @@ import javax.servlet.http.*;
 
 public abstract class AbstractHttpFilter implements Filter {
     protected FilterConfig fc;
-    protected abstract void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException;
 
     protected FilterConfig getFilterConfig () {
         return fc;}
+
+    protected abstract void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException;
 
     @Override public void doFilter (ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         getFilterConfig().getServletContext().log(String.format("Applying filter:  %s", getFilterConfig().getFilterName()));

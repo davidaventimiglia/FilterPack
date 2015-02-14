@@ -8,7 +8,7 @@ import org.neptunestation.filterpack.api.*;
 
 public class ResponseHeaderFilter extends AbstractHttpFilter {
     @Override protected void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        for (Enumeration e=fc.getInitParameterNames(); e.hasMoreElements();) {
-            String headerName = (String)e.nextElement();
-            res.addHeader(headerName, fc.getInitParameter(headerName));}
+        for (Enumeration e = getFilterConfig().getInitParameterNames(); e.hasMoreElements();) {
+            String name = (String)e.nextElement();
+            res.addHeader(name, getFilterConfig().getInitParameter(name));}
         chain.doFilter(req, res);}}
