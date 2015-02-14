@@ -9,4 +9,8 @@ import org.neptunestation.filterpack.api.*;
 public class XSLTStyleSheetInjectorFilter extends XMLTransformFilter {
     public static String XSL = "XSL";
 
-    @Override protected void doFilter (HttpServletRequest origReq, HttpServletResponse origRes, FilterChain chain) throws IOException, ServletException {chain.doFilter(origReq, new XSLTHttpServletResponse(origRes, getFilterConfig().getInitParameter(XSL)){});}}
+    @Override protected HttpServletResponse wrapResponse (HttpServletResponse origRes) throws ServletException {
+        return new XSLTHttpServletResponse(origRes, getFilterConfig().getInitParameter(XSL)){};}
+
+    @Override protected void doFilter (HttpServletRequest origReq, HttpServletResponse origRes, FilterChain chain) throws IOException, ServletException {
+        chain.doFilter(origReq, wrapResponse(origRes));}}
