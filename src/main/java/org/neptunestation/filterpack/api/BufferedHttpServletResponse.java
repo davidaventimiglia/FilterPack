@@ -13,10 +13,10 @@ public abstract class BufferedHttpServletResponse extends HttpServletResponseWra
         super(origRes);}
 
     public InputStream getInputStream () {
-        return new ByteArrayInputStream(buffer.toByteArray());}
+        return new ByteArrayInputStream(getBuffer().toByteArray());}
 
-    public byte[] toByteArray () {
-        return buffer.toByteArray();}
+    protected byte[] toByteArray () {
+        return getBuffer().toByteArray();}
 
     protected ByteArrayOutputStream getBuffer () {
         return buffer;}
