@@ -39,7 +39,7 @@ public abstract class BufferedHttpServletResponse extends HttpServletResponseWra
         return myOutputStream;}
 
     protected void commit (byte[] contents) throws IOException {
-        getResponse().setContentLength(contents.length);
+        setContentLength(contents.length);
         getResponse().getOutputStream().write(contents);
         getResponse().getOutputStream().flush();}
 
