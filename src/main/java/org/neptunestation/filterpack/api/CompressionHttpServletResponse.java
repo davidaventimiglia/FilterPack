@@ -13,7 +13,6 @@ public abstract class CompressionHttpServletResponse extends BufferedHttpServlet
     @Override public ServletOutputStream getOutputStream () throws IOException {
         myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
-                System.out.println(String.format("Location:  %s", new Exception().getStackTrace()[0]));
                 super.flush();
                 commit(toTransformedByteArray());}};
         return myOutputStream;}

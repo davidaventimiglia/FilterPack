@@ -22,7 +22,6 @@ public abstract class BufferedHttpServletResponse extends HttpServletResponseWra
         return buffer;}
 
     @Override public void flushBuffer () throws IOException {
-        System.out.println(String.format("Location:  %s", new Exception().getStackTrace()[0]));
         if (myWriter==null && myOutputStream==null) throw new IllegalStateException("HttpServletResponse is not properly initialized.");
         if (myWriter!=null) myWriter.flush();
         if (myOutputStream!=null) myOutputStream.flush();
@@ -33,7 +32,6 @@ public abstract class BufferedHttpServletResponse extends HttpServletResponseWra
         if (myOutputStream!=null) return myOutputStream;
         myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
-                System.out.println(String.format("Location:  %s", new Exception().getStackTrace()[0]));
                 super.flush();
                 commit(toByteArray());}};
         return myOutputStream;}
