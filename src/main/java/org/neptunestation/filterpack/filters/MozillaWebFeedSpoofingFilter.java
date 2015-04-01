@@ -8,6 +8,9 @@ public class MozillaWebFeedSpoofingFilter extends XMLTransformFilter {
     public static String TRIGGER_HEADER = "TRIGGER_HEADER";
     public static String TRIGGER_HEADER_REGEXP = "TRIGGER_HEADER_REGEXP";
 
+    protected String header = "User-Agent";
+    protected String headerRegexp = ".*Mozilla.*";
+
     @Override protected String getXSL () {
         return 
             "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">" +
@@ -23,6 +26,11 @@ public class MozillaWebFeedSpoofingFilter extends XMLTransformFilter {
             "  </xsl:template>" +
             "</xsl:stylesheet>";}
 
+    @Override public void init (FilterConfig filterConfig) {
+        if (filterConfig.getInitParameter(TRIGGER_HEADER)!=null) header = filterConfig.getInitParameter(TRIGGER_HEADER);
+        if (filterConfig.getInitParameter(TRIGGER_HEADER_REGEXP)!=null) headerRegexp = filterConfig.getInitParameter(TRIGGER_HEADER_REGEXP);
+        super.init(filterConfig);}
+
     @Override protected void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-        if ((req.getHeader(getFilterConfig().getInitParameter(TRIGGER_HEADER))+"").matches(getFilterConfig().getInitParameter(TRIGGER_HEADER_REGEXP)+"")) chain.doFilter(req, wrapResponse(res));
+        if ((req.getHeader(header)+"").matches(headerRegexp)) chain.doFilter(req, wrapResponse(res));
         else chain.doFilter(req, res);}}
