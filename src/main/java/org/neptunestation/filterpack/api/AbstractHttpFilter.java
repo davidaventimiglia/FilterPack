@@ -12,8 +12,11 @@ public abstract class AbstractHttpFilter implements Filter {
 
     protected abstract void doFilter (HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException;
 
+    protected void log (String msg) {
+        getFilterConfig().getServletContext().log(msg);}
+	
     @Override public void doFilter (ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        getFilterConfig().getServletContext().log(String.format("Applying filter:  %s", getFilterConfig().getFilterName()));
+        log(String.format("Applying filter:  %s", getFilterConfig().getFilterName()));
         if (req==null) throw new IllegalArgumentException("HttpServletRequest is required.");
         if (res==null) throw new IllegalArgumentException("HttpServletResponse is required.");
         if (chain==null) throw new IllegalArgumentException("FilterChain is required.");
