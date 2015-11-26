@@ -2,7 +2,7 @@ package org.neptunestation.filterpack.filters;
 
 import javax.servlet.*;
 
-public class XSLTCommentStripperFilter extends XMLTransformFilter {
+public class XMLCommentsStripperFilter extends XMLTransformFilter {
     public static String XSL_URL = "XSL_URL";
 
     private String xsl = null;
