@@ -21,23 +21,19 @@ public abstract class AbstractFilterStream extends ServletOutputStream {
     public boolean isClosed () {
         return closed;}
   
-    @Override
-    public void close () throws IOException {
+    @Override public void close () throws IOException {
         if (closed) throw new IOException("This output stream has already been closed");
         getBaseStream().close();
         closed = true;}
 
-    @Override
-    public void flush () throws IOException {
+    @Override public void flush () throws IOException {
         if (closed) throw new IOException("Cannot flush a closed output stream");
         getBaseStream().flush();}
 
-    @Override
-    public void write (int b) throws IOException {
+    @Override public void write (int b) throws IOException {
         if (closed) throw new IOException("Cannot write to a closed output stream");
         getBaseStream().write((byte)b);}
 
-    @Override
-    public void write (byte b[], int off, int len) throws IOException {
+    @Override public void write (byte b[], int off, int len) throws IOException {
         if (closed) throw new IOException("Cannot write to a closed output stream");
         getBaseStream().write(b, off, len);}}

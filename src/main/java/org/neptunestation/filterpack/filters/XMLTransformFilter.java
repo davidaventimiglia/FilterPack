@@ -9,6 +9,9 @@ import org.neptunestation.filterpack.api.*;
 public class XMLTransformFilter extends BufferedFilter {
     public static String XSL = "XSL";
 
+    @Override public String toString () {
+        return getXSL();}
+
     protected String getXSL () {
         return getFilterConfig().getInitParameter(XSL);}
 

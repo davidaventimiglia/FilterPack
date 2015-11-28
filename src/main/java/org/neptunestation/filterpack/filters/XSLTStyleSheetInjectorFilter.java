@@ -23,5 +23,5 @@ public class XSLTStyleSheetInjectorFilter extends XMLTransformFilter {
                             "</xsl:stylesheet>",
 			    String.format("%s/%s", getFilterConfig().getServletContext().getContextPath(), getFilterConfig().getInitParameter(XSL_URL)));}
 
-    protected String getXSL () {
+    @Override protected String getXSL () {
         return xsl;}}
