@@ -23,8 +23,13 @@ public abstract class XSLTHttpServletResponse extends BufferedHttpServletRespons
     public XSLTHttpServletResponse (HttpServletResponse origRes, String xslt) throws ServletException {
         this(origRes, new StringReader(xslt));}
 
+    public XSLTHttpServletResponse (HttpServletResponse origRes, URL url) throws ServletException {
+        this(origRes, new StreamSource(url + ""));}
+
     @Override public ServletOutputStream getOutputStream () throws IOException {
         if (!(getContentType()+"").matches(".*/.*\\+?xml.*")) return super.getOutputStream();
+        if (transformer.getParameter("CONTENT_TYPE")!=null) setContentType(transformer.getParameter("CONTENT_TYPE")+"");
+        if ((transformer.getOutputProperty("method")+"").equalsIgnoreCase("html")) setContentType(transformer.getOutputProperty("method"));
         myOutputStream = new ComposableServletOutputStream(getBuffer()) {
             @Override public void flush () throws IOException {
                 super.flush();
