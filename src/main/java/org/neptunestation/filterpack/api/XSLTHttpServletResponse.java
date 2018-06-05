@@ -8,12 +8,10 @@ import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 
 public abstract class XSLTHttpServletResponse extends BufferedHttpServletResponse {
-    protected Source xslt = null;
     protected Transformer transformer = null;
 
     public XSLTHttpServletResponse (HttpServletResponse origRes, Source xslt) throws ServletException {
         super(origRes);
-        this.xslt = xslt;
         try {this.transformer = TransformerFactory.newInstance().newTransformer(xslt);}
         catch (Throwable t) {throw new ServletException(t);}}
 
