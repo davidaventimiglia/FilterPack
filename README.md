@@ -11,13 +11,7 @@ for JDBC data sources, according to the specifation of Apache
 
 * Run `mvn install`.
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
 ### Who do I talk to? ###
 
-* Atomic is developed at
-  [NeptuneStation](http://www.neptunestation.com/).
+* Atomic is developed by David A. Ventimiglia <davidaventimiglia@neptunestationc.com>.
+
