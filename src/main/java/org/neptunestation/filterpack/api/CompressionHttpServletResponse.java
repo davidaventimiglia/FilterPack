@@ -1,7 +1,6 @@
 package org.neptunestation.filterpack.api;
 
 import java.io.*;
-import java.net.*;
 import java.util.zip.*;
 import javax.servlet.*;
 import javax.servlet.http.*;

@@ -24,7 +24,7 @@ public class ServerSideCacheFilter extends AbstractHttpFilter {
         String localeSensitive = fc.getInitParameter("locale-sensitive");
         if (localeSensitive != null) {
             StringWriter ldata = new StringWriter();
-            Enumeration locales = request.getLocales();
+            Enumeration<Locale> locales = request.getLocales();
             while (locales.hasMoreElements()) {
                 Locale locale = (Locale)locales.nextElement();
                 ldata.write(locale.getISO3Language());}
@@ -36,7 +36,6 @@ public class ServerSideCacheFilter extends AbstractHttpFilter {
         File file = new File(temp+id);
 
         // get current resource
-        if (path == null) path = sc.getRealPath(request.getRequestURI());
         File current = new File(path);
 
         try {
@@ -56,11 +55,11 @@ public class ServerSideCacheFilter extends AbstractHttpFilter {
         catch (ServletException e) {if (!file.exists()) throw new ServletException(e);}
         catch (IOException e) {if (!file.exists()) throw e;}
 
-        FileInputStream fis = new FileInputStream(file);
         String mt = sc.getMimeType(request.getRequestURI());
         response.setContentType(mt);
-        ServletOutputStream sos = response.getOutputStream();
-        for (int i = fis.read(); i!= -1; i = fis.read()) sos.write((byte)i);}
+	try (FileInputStream fis = new FileInputStream(file);
+	     ServletOutputStream sos = response.getOutputStream()) {
+	    for (int i = fis.read(); i!= -1; i = fis.read()) sos.write((byte)i);}}
 
     public void init (FilterConfig filterConfig) {
         super.init(filterConfig);
